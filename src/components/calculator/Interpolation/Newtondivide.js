@@ -4,6 +4,7 @@ import { Input, Table, Button } from "antd";
 import { calfx, Error } from "../ConvertFx/Mathcal";
 import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
+import { i } from "mathjs";
 addStyles();
 const math = require("mathjs");
 let data = [];
@@ -11,32 +12,52 @@ let data = [];
 const initialState = {
   Numberofpoint: 0,
   xtrue: 0,
-  interpolatepoint:0
+  interpolatepoint: 0,
 };
-const columns = [
+var columns = [
   {
-    title: "Xauthor",
+    title: "No.",
+    dataIndex: "no",
+    key: "no",
+  },
+  {
+    title: "X",
     dataIndex: "x",
     key: "x",
   },
   {
-    title: "Value",
-    dataIndex: "value",
-    key: "value",
+    title: "Y",
+    dataIndex: "y",
+    key: "y",
   },
 ];
-let x, y, tableTag, tempTag;
+let x = [],
+  y = [],
+  tableTag = [],
+  tempTag = [],
+  valueX = [],
+  valueY = [],
+  interpolate = [],
+  fx;
 export default function Newtondivide() {
-  const [showMatrix, setshowMatrix] = useState(false);
   const [variable, setVariable] = useState(initialState);
   const [showtable, setshowtable] = useState(false);
+  const [showans, setshowans] = useState(false);
   const handlechange = (e) => {
     setVariable({ ...variable, [e.target.name]: e.target.value });
   };
   const clearState = () => {
-    setshowMatrix(false);
+    setshowans(false);
     setshowtable(false);
     setVariable({ ...initialState });
+    x = [];
+    y = [];
+    tableTag = [];
+    tempTag = [];
+    valueX = [];
+    valueY = [];
+    interpolate = [];
+    fx = undefined;
   };
 
   function createTable(n) {
@@ -44,13 +65,11 @@ export default function Newtondivide() {
       x.push(
         <Input
           style={{
-            width: "100%",
-            height: "50%",
-            backgroundColor: "black",
-            marginInlineEnd: "5%",
-            marginBlockEnd: "5%",
-            color: "white",
-            fontSize: "18px",
+            width: "50%",
+            height: "20%",
+            marginInlineEnd: "1%",
+            marginBlockEnd: "1%",
+            fontSize: "12px",
             fontWeight: "bold",
           }}
           id={"x" + i}
@@ -61,13 +80,11 @@ export default function Newtondivide() {
       y.push(
         <Input
           style={{
-            width: "100%",
-            height: "50%",
-            backgroundColor: "black",
-            marginInlineEnd: "5%",
-            marginBlockEnd: "5%",
-            color: "white",
-            fontSize: "18px",
+            width: "50%",
+            height: "20%",
+            marginInlineEnd: "1%",
+            marginBlockEnd: "1%",
+            fontSize: "12px",
             fontWeight: "bold",
           }}
           id={"y" + i}
@@ -81,19 +98,18 @@ export default function Newtondivide() {
         y: y[i - 1],
       });
     }
+    setshowtable(true);
   }
   function createInterpolatePointInput() {
-    for (var i = 1; i <= this.state.interpolatePoint; i++) {
+    for (var i = 1; i <= variable.interpolatepoint; i++) {
       tempTag.push(
         <Input
           style={{
-            width: "14%",
-            height: "50%",
-            backgroundColor: "black",
-            marginInlineEnd: "5%",
-            marginBlockEnd: "5%",
-            color: "white",
-            fontSize: "18px",
+            width: "8%",
+            height: "20%",
+            marginInlineEnd: "1%",
+            marginBlockEnd: "1%",
+            fontSize: "12px",
             fontWeight: "bold",
           }}
           id={"p" + i}
@@ -103,8 +119,43 @@ export default function Newtondivide() {
       );
     }
   }
-  function Newton() {
-    setshowtable(true);
+  function inputvalue() {
+    for (let i = 1; i <= variable.Numberofpoint; i++) {
+      valueX[i] = parseFloat(document.getElementById("x" + i).value);
+      valueY[i] = parseFloat(document.getElementById("y" + i).value);
+    }
+    for (let i = 1; i <= variable.interpolatepoint; i++) {
+      interpolate[i] = parseInt(document.getElementById("p" + i).value);
+    }
+  }
+  function C(n) {
+    if (n == 1) {
+      return 0;
+    } else {
+      return (
+        (valueY[interpolate[n]] - valueY[interpolate[n - 1]]) / (valueX[interpolate[n]] - valueX[interpolate[n - 1]]) - C(n - 1)
+      );
+    }
+  }
+  function findX(n, xtrue) {
+    if (n < 1) {
+      return 1;
+    } else {
+      return (xtrue - valueX[interpolate[n]]) * findX(n - 1, xtrue);
+    }
+  }
+  function Newton(n, xtrue) {
+    inputvalue();
+    fx = valueY[1];
+    if (n == 2) {
+      fx += ((valueY[interpolate[2]] - valueY[interpolate[1]]) / (valueX[interpolate[2]] - valueX[interpolate[1]])) * (xtrue - valueX[interpolate[1]]);
+    } else {
+      for (var i = 2; i <= n; i++) {
+        fx += (C(i) / (valueX[interpolate[i]] - valueX[interpolate[1]])) * findX(i - 1, xtrue);
+      }
+    }
+
+    setshowans(true);
   }
 
   return (
@@ -127,7 +178,7 @@ export default function Newtondivide() {
                 style={{ width: "90%" }}
                 onChange={handlechange}
               />
-              <p style={{ fontSize: "20px" }}>X</p>
+              <p style={{ fontSize: "20px" }}>X to find</p>
               <Input
                 placeholder="column matrix"
                 name="xtrue"
@@ -144,25 +195,45 @@ export default function Newtondivide() {
                 onChange={handlechange}
               />
               <div style={{ marginTop: "1vh" }}>
-                <Button type="primary" onClick={() => {Newton(variable.Numberofpoint)}}>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    createTable(parseFloat(variable.Numberofpoint));
+                    createInterpolatePointInput();
+                  }}
+                >
                   Submit button
                 </Button>
               </div>
+              <br />
+              {showans && (
+                <Card>
+                  <p style={{ fontSize: "20px" }}>Answer</p>
+                  <p style={{ fontSize: "20px" }}>{fx}</p>
+                </Card>
+              )}
             </Card>
           </Col>
           <Col span={20}>
             <Card style={{ justifyContent: "left" }}>
               <p style={{ fontSize: "20px" }}>Table</p>
 
-              {showMatrix && (
+              {showtable && (
                 <Card>
-                  <p style={{ fontSize: "20px" }}>Matrix A</p>
-
-                  <p style={{ fontSize: "20px" }}>Matrix B</p>
-
+                  <Table
+                    columns={columns}
+                    dataSource={tableTag}
+                    pagination={false}
+                  />
+                  <br />
+                  <p style={{ fontSize: "20px" }}>Point</p>
+                  <h2>{tempTag}</h2>
                   <Button
                     onClick={() => {
-                      
+                      Newton(
+                        parseFloat(variable.interpolatepoint),
+                        parseFloat(variable.xtrue)
+                      );
                     }}
                   >
                     Submit
@@ -173,7 +244,6 @@ export default function Newtondivide() {
           </Col>
         </Row>
       </div>
-      {showtable && <Table columns={columns} dataSource={data} />}
     </div>
   );
 }

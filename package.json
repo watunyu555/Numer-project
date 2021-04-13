@@ -7,6 +7,7 @@
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
     "algebra-latex": "^2.0.3",
+    "cubic-spline": "^3.0.3",
     "desmos": "^1.5.4",
     "linear-equation-system": "^1.1.1",
     "mathjs": "^9.3.0",
@@ -15,6 +16,7 @@
     "react-mathquill": "^1.0.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "regression": "^2.0.1",
     "web-vitals": "^1.1.1"
   },
   "scripts": {
