@@ -3,9 +3,10 @@ import { Input, Table, Button } from "antd";
 import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
 import regression from "regression";
-const Spline = require("cubic-spline");
 addStyles();
 const math = require("mathjs");
+const axios = require("axios");
+let api;
 const initialState = {
   Numberofpoint: 0,
   xfind: 0,
@@ -128,21 +129,45 @@ export default function Regression() {
       };
     }
     for (let i = 0; i < result.equation.length; i++) {
-      if(i == 0){
-        ans += result.equation[i]
-      }else{
-        ans += (result.equation[i]*(Math.pow(variable.xfind,i)))
+      if (i == 0) {
+        ans += result.equation[i];
+      } else {
+        ans += result.equation[i] * Math.pow(variable.xfind, i);
       }
     }
     setshowans(true);
   }
-
+  async function example() {
+    await axios({
+      method: "get",
+      url: "http://localhost:5000/database/linear",
+    }).then((response) => {
+      console.log("response: ", response.data);
+      api = response.data;
+    });
+    await setVariable({
+      Numberofpoint:api.numberpoint,
+      xfind:api.xfind
+    })
+    await createTable(api.numberpoint)
+    for (let i = 1; i <= api.numberpoint; i++) {
+      document.getElementById("x" + i).value = api.arrayX[i - 1];
+      document.getElementById("y" + i).value = api.arrayY[i - 1];
+    }
+  }
   return (
     <div>
       <p>Linear Regression</p>
       <Card style={{ justifyContent: "right" }}>
         <Button type="primary" onClick={() => clearState()}>
           Clear
+        </Button>
+        <Button
+          type="primary"
+          style={{ marginLeft: "5px" }}
+          onClick={() => example()}
+        >
+          Example
         </Button>
       </Card>
       <div>

@@ -4,8 +4,10 @@ import { Input, Table, Button } from "antd";
 import { calfx, Error } from "../ConvertFx/Mathcal";
 import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
+const axios = require("axios");
 addStyles();
 const math = require("mathjs");
+let api;
 let data = [];
 const initialState = {
   row: 0,
@@ -117,7 +119,31 @@ export default function GuassSeidel() {
       X.push(parseFloat(document.getElementById("x" + (i + 1)).value));
     }
   }
-
+  async function example() {
+    await axios({
+      method: "get",
+      url: "http://localhost:5000/database/seidel",
+    }).then((response) => {
+      console.log("response: ", response.data);
+      api = response.data;
+    });
+    await setVariable({
+      row: api.row,
+      column: api.column,
+    });
+    matrixA = [];
+    matrixB = [];
+    matrixX = [];
+    await createMatrix(api.row, api.column);
+    for (let i = 1; i <= api.row; i++) {
+      for (let j = 1; j <= api.column; j++) {
+        document.getElementById("a" + i + "" + j).value =
+          api.arrayA[i - 1][j - 1];
+      }
+      document.getElementById("b" + i).value = api.arrayB[i - 1];
+      document.getElementById("x" + i).value = api.arrayX[i - 1];
+    }
+  }
   function seidel(n) {
     getMatrix();
     A = math.matrix(A);
@@ -136,11 +162,11 @@ export default function GuassSeidel() {
         if (errornow <= epsilon) {
           check[i] = true;
         }
-        X[i] = x
+        X[i] = x;
       }
-      
-      if(!(check.every((value)=>value==false))){
-        break
+
+      if (!check.every((value) => value == false)) {
+        break;
       }
       if (count > 100) {
         break;
@@ -164,6 +190,13 @@ export default function GuassSeidel() {
       <Card style={{ justifyContent: "right" }}>
         <Button type="primary" onClick={() => clearState()}>
           Clear
+        </Button>
+        <Button
+          type="primary"
+          style={{ marginLeft: "5px" }}
+          onClick={() => example()}
+        >
+          Example
         </Button>
       </Card>
       <div>

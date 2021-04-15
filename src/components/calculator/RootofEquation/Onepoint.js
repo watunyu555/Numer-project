@@ -4,8 +4,10 @@ import { Input, Table, Button } from "antd";
 import { calfx, Error } from "../ConvertFx/Mathcal";
 import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
+const axios = require("axios");
 addStyles();
 let data = [];
+let api
 const initialState = {
   xzero: 0,
 };
@@ -42,6 +44,19 @@ export default function Falsepos() {
     setVariable({ ...initialState });
     data = [];
   };
+  async function example() {
+    await axios({
+      method: "get",
+      url: "http://localhost:5000/database/onepoint",
+    }).then((response) => {
+      console.log("response: ", response.data);
+      api = response.data;
+    });
+    await setLatex(api.latex)
+    await setVariable({
+      xzero:api.x,
+    })
+  }
   function onepoint(xold) {
     let xnew = 0;
     let errornow = Infinity;
@@ -67,6 +82,9 @@ export default function Falsepos() {
       <Card style={{ justifyContent: "right" }}>
         <Button type="primary" onClick={() => clearState()}>
           Clear
+        </Button>
+        <Button type="primary" style={{marginLeft:"5px"}} onClick={() => example()}>
+          Example
         </Button>
       </Card>
       <div>

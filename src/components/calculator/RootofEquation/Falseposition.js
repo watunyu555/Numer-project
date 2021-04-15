@@ -4,8 +4,10 @@ import { Input, Table, Button } from "antd";
 import { calfx, Error } from "../ConvertFx/Mathcal";
 import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
+const axios = require("axios");
 addStyles();
 let data = [];
+let api
 const initialState = {
   xl: 0,
   xr: 0,
@@ -63,9 +65,7 @@ export default function Falsepos() {
       increase = true;
     }
     while (errornow > epslion) {
-      xi =
-        (xl * calfx(latex, xr) - xr * calfx(latex, xl)) /
-        (calfx(latex, xr) - calfx(latex, xl));
+      xi = (xl * calfx(latex, xr) - xr * calfx(latex, xl)) /(calfx(latex, xr) - calfx(latex, xl));
       if (calfx(latex, xi) * calfx(latex, xr) < 0) {
         errornow = Error(xi, xr);
         if (increase) {
@@ -86,12 +86,26 @@ export default function Falsepos() {
         iteration: n + 1,
         xl: xl,
         xr: xr,
-        x: xm.toFixed(6),
+        x: xi.toFixed(6),
         error: Math.abs(errornow).toFixed(6),
       };
       n++;
     }
     setshowtable(true);
+  }
+  async function example() {
+    await axios({
+      method: "get",
+      url: "http://localhost:5000/database/falseposition",
+    }).then((response) => {
+      console.log("response: ", response.data);
+      api = response.data;
+    });
+    await setLatex(api.latex)
+    await setVariable({
+      xl:api.xl,
+      xr:api.xr
+    })
   }
   return (
     <div>
@@ -99,6 +113,9 @@ export default function Falsepos() {
       <Card style={{ justifyContent: "right" }}>
         <Button type="primary" onClick={() => clearState()}>
           Clear
+        </Button>
+        <Button type="primary" style={{marginLeft:"5px"}} onClick={() => example()}>
+          Example
         </Button>
       </Card>
       <div>

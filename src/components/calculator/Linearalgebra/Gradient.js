@@ -6,8 +6,9 @@ import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
 import { det, add, subtract, multiply, transpose } from "mathjs";
 addStyles();
-const math = require("mathjs");
+const axios = require("axios");
 let data = [];
+let api;
 const initialState = {
   row: 0,
   column: 0,
@@ -159,13 +160,44 @@ export default function Gradient() {
     }
     setshowtable(true);
   }
-
+  async function example() {
+    await axios({
+      method: "get",
+      url: "http://localhost:5000/database/conjugate",
+    }).then((response) => {
+      console.log("response: ", response.data);
+      api = response.data;
+    });
+    await setVariable({
+      row: api.row,
+      column: api.column,
+    });
+    matrixA = [];
+    matrixB = [];
+    matrixX = [];
+    await createMatrix(api.row, api.column);
+    for (let i = 1; i <= api.row; i++) {
+      for (let j = 1; j <= api.column; j++) {
+        document.getElementById("a" + i + "" + j).value =
+          api.arrayA[i - 1][j - 1];
+      }
+      document.getElementById("b" + i).value = api.arrayB[i - 1];
+      document.getElementById("x" + i).value = api.arrayX[i - 1];
+    }
+  }
   return (
     <div>
       <p>Conjigate Gradient Method</p>
       <Card style={{ justifyContent: "right" }}>
         <Button type="primary" onClick={() => clearState()}>
           Clear
+        </Button>
+        <Button
+          type="primary"
+          style={{ marginLeft: "5px" }}
+          onClick={() => example()}
+        >
+          Example
         </Button>
       </Card>
       <div>

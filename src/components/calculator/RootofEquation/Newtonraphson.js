@@ -4,8 +4,10 @@ import { Input, Table, Button } from "antd";
 import { calfx, Error, calDiff } from "../ConvertFx/Mathcal";
 import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
+const axios = require("axios");
 addStyles();
 let data = [];
+let api
 const columns = [
   {
     title: "Iteration",
@@ -36,6 +38,18 @@ export default function Newton() {
     setmaxiteration(0);
     data = [];
   };
+  async function example() {
+    await axios({
+      method: "get",
+      url: "http://localhost:5000/database/newtonraphson",
+    }).then((response) => {
+      console.log("response: ", response.data);
+      api = response.data;
+    });
+    await setLatex(api.latex)
+    await setXzero(api.x)
+    await setmaxiteration(api.iteration)
+  }
   function Newtonraphon(xold) {
     let n = 0;
     let xnew = 0;
@@ -65,6 +79,9 @@ export default function Newton() {
       <Card style={{ justifyContent: "right" }}>
         <Button type="primary" onClick={() => clearState()}>
           Clear
+        </Button>
+        <Button type="primary" style={{marginLeft:"5px"}} onClick={() => example()}>
+          Example
         </Button>
       </Card>
       <div>

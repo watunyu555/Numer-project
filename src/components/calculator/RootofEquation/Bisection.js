@@ -4,9 +4,10 @@ import { Input, Table, Button } from "antd";
 import { calfx, Error } from "../ConvertFx/Mathcal";
 import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
-
+const axios = require("axios");
 addStyles();
 let data = [];
+let api
 const initialState = {
   xl: 0,
   xr: 0,
@@ -52,6 +53,20 @@ export default function Bisection() {
     setVariable({ ...initialState });
     data = [];
   };
+  async function example() {
+    await axios({
+      method: "get",
+      url: "http://localhost:5000/database/bisection",
+    }).then((response) => {
+      console.log("response: ", response.data);
+      api = response.data;
+    });
+    await setLatex(api.latex)
+    await setVariable({
+      xl:api.xl,
+      xr:api.xr
+    })
+  }
   function bisec(xl, xr) {
     let xm = 0;
     let n = 0;
@@ -96,9 +111,12 @@ export default function Bisection() {
   return (
     <div>
       <p>Bisection</p>
-      <Card style={{justifyContent:"right"}}>
+      <Card style={{ justifyContent: "right" }}>
         <Button type="primary" onClick={() => clearState()}>
           Clear
+        </Button>
+        <Button type="primary" style={{marginLeft:"5px"}} onClick={() => example()}>
+          Example
         </Button>
       </Card>
       <div>

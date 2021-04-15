@@ -36,9 +36,6 @@ const Linearalgebra = (
     <Menu.Item key="menu_lu">
       <Link to="/lu">LU Decomposition</Link>
     </Menu.Item>
-    <Menu.Item key="menu_cholesky">
-      <Link to="/cholesky">Cholesky Decomposition</Link>
-    </Menu.Item>
     <Menu.Item key="menu_jacobi">
       <Link to="/jacobi">Jacobi Iteration Method</Link>
     </Menu.Item>

@@ -4,9 +4,11 @@ import { Input, Table, Button } from "antd";
 import { calfx, Error } from "../ConvertFx/Mathcal";
 import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
+const axios = require("axios");
 addStyles();
 const math = require("mathjs");
 let data = [];
+let api;
 const initialState = {
   row: 0,
   column: 0,
@@ -105,10 +107,9 @@ export default function GaussElimination() {
       for (var j = i + 1; j < n; j++) {
         var factor = A[j][i] / A[i][i];
         for (var k = i; k < n; k++) {
-          A[j][k] = A[j][k] - (factor * A[i][k]);
-          
+          A[j][k] = A[j][k] - factor * A[i][k];
         }
-        B[j] = B[j] - (factor * B[i]);
+        B[j] = B[j] - factor * B[i];
       }
     }
     // console.log(A);
@@ -132,13 +133,42 @@ export default function GaussElimination() {
     }
     setshowtable(true);
   }
-
+  async function example() {
+    await axios({
+      method: "get",
+      url: "http://localhost:5000/database/gauss",
+    }).then((response) => {
+      console.log("response: ", response.data);
+      api = response.data;
+    });
+    await setVariable({
+      row: api.row,
+      column: api.column,
+    });
+    matrixA = [];
+    matrixB = [];
+    await createMatrix(api.row, api.column);
+    for (let i = 1; i <= api.row; i++) {
+      for (let j = 1; j <= api.column; j++) {
+        document.getElementById("a" + i + "" + j).value =
+          api.arrayA[i - 1][j - 1];
+      }
+      document.getElementById("b" + i).value = api.arrayB[i - 1];
+    }
+  }
   return (
     <div>
       <p>Gauss's Elimination</p>
       <Card style={{ justifyContent: "right" }}>
         <Button type="primary" onClick={() => clearState()}>
           Clear
+        </Button>
+        <Button
+          type="primary"
+          style={{ marginLeft: "5px" }}
+          onClick={() => example()}
+        >
+          Example
         </Button>
       </Card>
       <div>

@@ -4,8 +4,10 @@ import { Input, Table, Button } from "antd";
 import { calfx, Error } from "../ConvertFx/Mathcal";
 import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
+const axios = require("axios");
 addStyles();
 let data = [];
+let api;
 const initialState = {
   start: 0,
   finish: 0,
@@ -41,13 +43,10 @@ export default function Graphi() {
     setVariable({ ...initialState });
     data = [];
   };
+
   function Graphical() {
     let count = 0;
-    for (
-      let i = parseFloat(variable.start);
-      i <= parseFloat(variable.finish);
-      i++
-    ) {
+    for (let i = parseFloat(variable.start);i <= parseFloat(variable.finish);i++) {
       console.log(i);
       data[count] = {
         key: count,
@@ -60,12 +59,33 @@ export default function Graphi() {
     console.log(data);
     setshowtable(true);
   }
+  async function example() {
+    await axios({
+      method: "get",
+      url: "http://localhost:5000/database/graphical",
+    }).then((response) => {
+      console.log("response: ", response.data);
+      api = response.data;
+    });
+    await setLatex(api.latex)
+    await setVariable({
+      start:api.start,
+      finish:api.finish
+    })
+  }
   return (
     <div>
       <p>Graphical</p>
       <Card style={{ justifyContent: "right" }}>
         <Button type="primary" onClick={() => clearState()}>
           Clear
+        </Button>
+        <Button
+          type="primary"
+          style={{ marginLeft: "5px" }}
+          onClick={() => example()}
+        >
+          Example
         </Button>
       </Card>
       <div>

@@ -4,9 +4,11 @@ import { Input, Table, Button } from "antd";
 import { calfx, Error } from "../ConvertFx/Mathcal";
 import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
+const axios = require("axios");
 addStyles();
 const math = require("mathjs");
 let data = [];
+let api
 const initialState = {
   row: 0,
   column: 0,
@@ -114,13 +116,37 @@ export default function CramerRule() {
     }
     setshowtable(true);
   }
-
+  async function example() {
+    await axios({
+      method: "get",
+      url: "http://localhost:5000/database/cramer",
+    }).then((response) => {
+      console.log("response: ", response.data);
+      api = response.data;
+    });
+    await setVariable({
+      row:api.row,
+      column:api.column
+    })
+    matrixA = [];
+    matrixB = [];
+    await createMatrix(api.row, api.column)
+    for (let i = 1; i <= api.row; i++) {
+      for (let j = 1; j <= api.column; j++) {
+        document.getElementById("a" + i + "" + j).value = api.arrayA[i-1][j-1]
+      }
+      document.getElementById("b" + i).value = api.arrayB[i-1]
+    }
+  }
   return (
     <div>
       <p>Cramer's Rule</p>
       <Card style={{ justifyContent: "right" }}>
         <Button type="primary" onClick={() => clearState()}>
           Clear
+        </Button>
+        <Button type="primary" style={{marginLeft:"5px"}} onClick={() => example()}>
+          Example
         </Button>
       </Card>
       <div>

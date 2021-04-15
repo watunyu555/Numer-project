@@ -4,11 +4,11 @@ import { Input, Table, Button } from "antd";
 import { calfx, Error } from "../ConvertFx/Mathcal";
 import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
-import { i } from "mathjs";
 addStyles();
 const math = require("mathjs");
+const axios = require("axios");
 let data = [];
-
+let api;
 const initialState = {
   Numberofpoint: 0,
   xtrue: 0,
@@ -100,8 +100,8 @@ export default function LagrangeMethod() {
     }
     setshowtable(true);
   }
-  function createInterpolatePointInput() {
-    for (var i = 1; i <= variable.interpolatepoint; i++) {
+  function createInterpolatePointInput(n) {
+    for (var i = 1; i <= n; i++) {
       tempTag.push(
         <Input
           style={{
@@ -149,13 +149,46 @@ export default function LagrangeMethod() {
     }
     setshowans(true);
   }
-
+  async function example() {
+    await axios({
+      method: "get",
+      url: "http://localhost:5000/database/lagrange",
+    }).then((response) => {
+      console.log("response: ", response.data);
+      api = response.data;
+    });
+    setVariable({
+      Numberofpoint: api.numberpoint,
+      xtrue: api.xfind,
+      interpolatepoint: api.interpolateinput,
+    });
+    x = [];
+    y = [];
+    tableTag = [];
+    tempTag = [];
+    await createInterpolatePointInput(api.interpolateinput);
+    await createTable(api.numberpoint);
+    for (let i = 1; i <= api.numberpoint; i++) {
+      document.getElementById("x" + i).value = api.arrayX[i - 1];
+      document.getElementById("y" + i).value = api.arrayY[i - 1];
+    }
+    for (let i = 1; i <= api.interpolateinput; i++) {
+      document.getElementById("p" + i).value = api.interpolatePoint[i - 1];
+    }
+  }
   return (
     <div>
       <p>Lagrange</p>
       <Card style={{ justifyContent: "right" }}>
         <Button type="primary" onClick={() => clearState()}>
           Clear
+        </Button>
+        <Button
+          type="primary"
+          style={{ marginLeft: "5px" }}
+          onClick={() => example()}
+        >
+          Example
         </Button>
       </Card>
       <div>
@@ -191,7 +224,7 @@ export default function LagrangeMethod() {
                   type="primary"
                   onClick={() => {
                     createTable(parseFloat(variable.Numberofpoint));
-                    createInterpolatePointInput();
+                    createInterpolatePointInput(variable.interpolatepoint);
                   }}
                 >
                   Submit button

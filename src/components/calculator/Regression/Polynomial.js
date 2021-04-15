@@ -3,9 +3,10 @@ import { Input, Table, Button } from "antd";
 import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
 import regression from "regression";
-const Spline = require("cubic-spline");
 addStyles();
 const math = require("mathjs");
+const axios = require("axios");
+let api;
 const initialState = {
   Numberofpoint: 0,
   order: 0,
@@ -139,12 +140,38 @@ export default function Regression() {
     }
     setshowans(true);
   }
+  async function example() {
+    await axios({
+      method: "get",
+      url: "http://localhost:5000/database/polynomial",
+    }).then((response) => {
+      console.log("response: ", response.data);
+      api = response.data;
+    });
+    await setVariable({
+      Numberofpoint:api.numberpoint,
+      xfind:api.xfind,
+      order:api.ordernumber
+    })
+    await createTable(api.numberpoint)
+    for (let i = 1; i <= api.numberpoint; i++) {
+      document.getElementById("x" + i).value = api.arrayX[i - 1];
+      document.getElementById("y" + i).value = api.arrayY[i - 1];
+    }
+  }
   return (
     <div>
       <p>Polynomial Regression</p>
       <Card style={{ justifyContent: "right" }}>
         <Button type="primary" onClick={() => clearState()}>
           Clear
+        </Button>
+        <Button
+          type="primary"
+          style={{ marginLeft: "5px" }}
+          onClick={() => example()}
+        >
+          Example
         </Button>
       </Card>
       <div>

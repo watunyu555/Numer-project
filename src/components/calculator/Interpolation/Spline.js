@@ -3,8 +3,10 @@ import { Input, Table, Button } from "antd";
 import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
 const Spline = require("cubic-spline");
+const axios = require("axios");
 addStyles();
 const math = require("mathjs");
+let api
 const initialState = {
   Numberofpoint: 0,
   xtrue: 0,
@@ -108,13 +110,42 @@ export default function SplineMethod() {
     fx = spline.at(xtrue);
     setshowans(true);
   }
-
+  async function example() {
+    await axios({
+      method: "get",
+      url: "http://localhost:5000/database/spline",
+    }).then((response) => {
+      console.log("response: ", response.data);
+      api = response.data;
+    });
+    setVariable({
+      Numberofpoint: api.numberpoint,
+      xtrue: api.xfind,
+      interpolatepoint: api.interpolateinput,
+    });
+    x = [];
+    y = [];
+    tableTag = [];
+    tempTag = [];
+    await createTable(api.numberpoint);
+    for (let i = 1; i <= api.numberpoint; i++) {
+      document.getElementById("x" + i).value = api.arrayX[i - 1];
+      document.getElementById("y" + i).value = api.arrayY[i - 1];
+    }
+  }
   return (
     <div>
-      <p>Lagrange</p>
+      <p>Spline</p>
       <Card style={{ justifyContent: "right" }}>
         <Button type="primary" onClick={() => clearState()}>
           Clear
+        </Button>
+        <Button
+          type="primary"
+          style={{ marginLeft: "5px" }}
+          onClick={() => example()}
+        >
+          Example
         </Button>
       </Card>
       <div>
