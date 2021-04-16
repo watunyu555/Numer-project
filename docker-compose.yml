@@ -1,0 +1,19 @@
+version: "3.7"
+
+services:
+  app:
+    container_name: frontend-web
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    ports:
+      - 3000:3000
+  api:
+    container_name: backend-api
+    hostname: api
+    build: ./backend
+    restart: always
+    ports:
+      - 5000:5000
