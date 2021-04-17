@@ -15,7 +15,7 @@ const initialState = {
 };
 const columns = [
   {
-    title: "Xauthor",
+    title: "Iteration",
     dataIndex: "x",
     key: "x",
   },
@@ -164,7 +164,12 @@ export default function GuassSeidel() {
         }
         X[i] = x;
       }
-
+      data[count] = {
+        key: count,
+        x: count + 1,
+        value: X.join(",\n"),
+      };
+      console.log(X);
       if (!check.every((value) => value == false)) {
         break;
       }
@@ -173,13 +178,6 @@ export default function GuassSeidel() {
       }
       count++;
       console.log(count);
-    }
-    for (let i = 0; i < n; i++) {
-      data[i] = {
-        key: i,
-        x: i + 1,
-        value: X[i],
-      };
     }
     setshowtable(true);
   }

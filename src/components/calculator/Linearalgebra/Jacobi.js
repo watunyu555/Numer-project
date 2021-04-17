@@ -163,9 +163,15 @@ export default function JacoBi() {
           check[i] = true;
         }
       }
+      data[count] = {
+        key: count,
+        x: count + 1,
+        value: X.join(",\n"),
+      };
       x.map((value, index) => {
         X[index] = value;
       });
+      console.log(X);
       if (!check.every((value) => value == false)) {
         break;
       }
@@ -174,13 +180,7 @@ export default function JacoBi() {
       }
       count++;
     }
-    for (let i = 0; i < n; i++) {
-      data[i] = {
-        key: i,
-        x: i + 1,
-        value: X[i],
-      };
-    }
+
     setshowtable(true);
   }
 
