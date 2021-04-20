@@ -19,14 +19,14 @@ const swaggerOptions = {
   apis: ["App.js"]
 };
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-const corsOptions = {
-  origin: "http://localhost:3000",
-  optionsSuccessStatus: 200,
-};
+// const corsOptions = {
+//   origin: ["http://localhost:80","http://localhost:3000"],
+//   optionsSuccessStatus: 200,
+// };
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
+app.use(cors())
 app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 // Routes
 /**
@@ -53,11 +53,11 @@ app.use("/swagger", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
  *      '200':
  *        description: A successful response
  */
-app.get("/database", cors(corsOptions), (req, res) => {
+app.get("/database",  (req, res) => {
   res.json(database);
 });
 
-app.get("/database/:name", cors(corsOptions), (req, res) => {
+app.get("/database/:name", (req, res) => {
   const resalt = database.filter(database => database.name == req.params.name)
   if(resalt.length > 0){
     res.json(resalt[0])

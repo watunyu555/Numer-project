@@ -1,7 +1,5 @@
 import { React, useState } from "react";
-import GraphDesmos from "../Calmath/GraphDesmos";
 import { Input, Table, Button } from "antd";
-import { calfx, Error } from "../ConvertFx/Mathcal";
 import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
 addStyles();
@@ -178,7 +176,7 @@ export default function LagrangeMethod() {
   }
   return (
     <div>
-      <p>Lagrange</p>
+      <span>Lagrange</span>
       <Card style={{ justifyContent: "right" }}>
         <Button type="primary" onClick={() => clearState()}>
           Clear

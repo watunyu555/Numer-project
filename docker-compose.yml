@@ -9,7 +9,7 @@ services:
     volumes:
       - .:/app
     ports:
-      - 3000:3000
+      - 80:80
   api:
     container_name: backend-api
     hostname: api

@@ -135,7 +135,7 @@ export default function SplineMethod() {
   }
   return (
     <div>
-      <p>Spline</p>
+      <div>Spline</div>
       <Card style={{ justifyContent: "right" }}>
         <Button type="primary" onClick={() => clearState()}>
           Clear
