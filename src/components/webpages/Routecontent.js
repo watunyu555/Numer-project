@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import React from "react";
 import Graphical from "../calculator/RootofEquation/Graphical";
 import Bisection from "../calculator/RootofEquation/Bisection";

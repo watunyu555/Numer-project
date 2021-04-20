@@ -1,9 +1,7 @@
 import { React, useState } from "react";
 import { Input, Table, Button } from "antd";
-import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
 const { regression } = require("multiregress");
-addStyles();
 const axios = require("axios");
 let api;
 const initialState = {

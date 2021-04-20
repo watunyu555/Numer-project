@@ -1,11 +1,7 @@
 import { React, useState } from "react";
 import { Input, Table, Button } from "antd";
-import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
 const axios = require("axios");
-addStyles();
-const math = require("mathjs");
-let data = [];
 let api
 const initialState = {
   Numberofpoint: 0,
@@ -127,7 +123,7 @@ export default function Newtondivide() {
     }
   }
   function C(n) {
-    if (n == 1) {
+    if (n === 1) {
       return 0;
     } else {
       return (
@@ -145,7 +141,7 @@ export default function Newtondivide() {
   function Newton(n, xtrue) {
     inputvalue();
     fx = valueY[1];
-    if (n == 2) {
+    if (n === 2) {
       fx += ((valueY[interpolate[2]] - valueY[interpolate[1]]) / (valueX[interpolate[2]] - valueX[interpolate[1]])) * (xtrue - valueX[interpolate[1]]);
     } else {
       for (var i = 2; i <= n; i++) {

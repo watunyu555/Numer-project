@@ -1,7 +1,5 @@
-import { React, useEffect, useState } from "react";
+import { React, useEffect } from "react";
 import Desmos from "desmos";
-import { addStyles, EditableMathField } from "react-mathquill";
-addStyles();
 
 export default function Bisection(props) {
   const { latex } = props;

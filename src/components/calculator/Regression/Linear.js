@@ -1,10 +1,7 @@
 import { React, useState } from "react";
 import { Input, Table, Button } from "antd";
-import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
 import regression from "regression";
-addStyles();
-const math = require("mathjs");
 const axios = require("axios");
 let api;
 const initialState = {
@@ -44,7 +41,6 @@ var columns = [
 let x = [],
   y = [],
   tableTag = [],
-  tempTag = [],
   valueX = [],
   valueY = [],
   valueans = [],
@@ -63,7 +59,6 @@ export default function Regression() {
     x = [];
     y = [];
     tableTag = [];
-    tempTag = [];
     valueX = [];
     valueY = [];
     data = [];
@@ -129,7 +124,7 @@ export default function Regression() {
       };
     }
     for (let i = 0; i < result.equation.length; i++) {
-      if (i == 0) {
+      if (i === 0) {
         ans += result.equation[i];
       } else {
         ans += result.equation[i] * Math.pow(variable.xfind, i);

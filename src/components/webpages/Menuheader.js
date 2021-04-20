@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {  Menu } from "antd";
 const Rootequation = (
   <Menu>

@@ -1,11 +1,7 @@
 import { React, useState } from "react";
-import GraphDesmos from "../Calmath/GraphDesmos";
 import { Input, Table, Button } from "antd";
-import { calfx, Error } from "../ConvertFx/Mathcal";
-import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
-import { det, add, subtract, multiply, transpose } from "mathjs";
-addStyles();
+import { add, subtract, multiply, transpose } from "mathjs";
 const axios = require("axios");
 let data = [];
 let api;
@@ -43,7 +39,6 @@ let A = [],
   matrixB = [],
   matrixX = [];
 export default function Gradient() {
-  const [latex, setLatex] = useState("");
   const [showMatrix, setshowMatrix] = useState(false);
   const [variable, setVariable] = useState(initialState);
   const [showtable, setshowtable] = useState(false);
@@ -51,7 +46,6 @@ export default function Gradient() {
     setVariable({ ...variable, [e.target.name]: e.target.value });
   };
   const clearState = () => {
-    setLatex("");
     setshowMatrix(false);
     setshowtable(false);
     setVariable({ ...initialState });

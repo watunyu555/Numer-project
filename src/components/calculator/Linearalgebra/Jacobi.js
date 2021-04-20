@@ -1,11 +1,7 @@
 import { React, useState } from "react";
-import GraphDesmos from "../Calmath/GraphDesmos";
 import { Input, Table, Button } from "antd";
-import { calfx, Error } from "../ConvertFx/Mathcal";
-import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
 const axios = require("axios");
-addStyles();
 const math = require("mathjs");
 let data = [];
 let api;
@@ -33,7 +29,6 @@ let A = [],
   matrixB = [],
   matrixX = [];
 export default function JacoBi() {
-  const [latex, setLatex] = useState("");
   const [showMatrix, setshowMatrix] = useState(false);
   const [variable, setVariable] = useState(initialState);
   const [showtable, setshowtable] = useState(false);
@@ -41,7 +36,6 @@ export default function JacoBi() {
     setVariable({ ...variable, [e.target.name]: e.target.value });
   };
   const clearState = () => {
-    setLatex("");
     setshowMatrix(false);
     setshowtable(false);
     setVariable({ ...initialState });
@@ -168,11 +162,14 @@ export default function JacoBi() {
         x: count + 1,
         value: X.join(",\n"),
       };
-      x.map((value, index) => {
-        X[index] = value;
-      });
+      // x.forEach((value, index) => {
+      //   X[index] = value;
+      // });
+      for (let i = 0; i < x.length; i++) {
+        X[i] = x[i]
+      }
       console.log(X);
-      if (!check.every((value) => value == false)) {
+      if (!check.every((value) => value === false)) {
         break;
       }
       if (count > 100) {

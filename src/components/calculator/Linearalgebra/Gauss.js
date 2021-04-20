@@ -1,12 +1,7 @@
 import { React, useState } from "react";
-import GraphDesmos from "../Calmath/GraphDesmos";
 import { Input, Table, Button } from "antd";
-import { calfx, Error } from "../ConvertFx/Mathcal";
-import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
 const axios = require("axios");
-addStyles();
-const math = require("mathjs");
 let data = [];
 let api;
 const initialState = {
@@ -32,7 +27,6 @@ let A = [],
   matrixB = [],
   X;
 export default function GaussElimination() {
-  const [latex, setLatex] = useState("");
   const [showMatrix, setshowMatrix] = useState(false);
   const [variable, setVariable] = useState(initialState);
   const [showtable, setshowtable] = useState(false);
@@ -40,7 +34,7 @@ export default function GaussElimination() {
     setVariable({ ...variable, [e.target.name]: e.target.value });
   };
   const clearState = () => {
-    setLatex("");
+   
     setshowMatrix(false);
     setshowtable(false);
     setVariable({ ...initialState });

@@ -1,11 +1,8 @@
 import { React, useState } from "react";
 import { Input, Table, Button } from "antd";
-import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
 const Spline = require("cubic-spline");
 const axios = require("axios");
-addStyles();
-const math = require("mathjs");
 let api
 const initialState = {
   Numberofpoint: 0,

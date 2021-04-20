@@ -1,6 +1,6 @@
 const math = require('mathjs')
 const AlgebraLatex = require('algebra-latex')
-const { derivative , evaluate} = require('mathjs')
+const { derivative } = require('mathjs')
 
 const calfx = (fx, value) => {
     const latexinput = fx.replace('\\exp','exp')

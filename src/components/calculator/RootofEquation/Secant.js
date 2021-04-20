@@ -1,7 +1,7 @@
 import { React, useState } from "react";
 import GraphDesmos from "../Calmath/GraphDesmos";
 import { Input, Table, Button } from "antd";
-import { calfx, Error, calDiff } from "../ConvertFx/Mathcal";
+import { calfx, Error } from "../ConvertFx/Mathcal";
 import { addStyles, EditableMathField } from "react-mathquill";
 import { Card, Col, Row } from "antd";
 const axios = require("axios");

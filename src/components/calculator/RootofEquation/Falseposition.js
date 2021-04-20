@@ -54,7 +54,6 @@ export default function Falsepos() {
     data = [];
   };
   function falseposition(xl, xr) {
-    let xm = 0;
     let n = 0;
     let xi = 0;
     let errornow = Infinity;
