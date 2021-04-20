@@ -16,46 +16,46 @@ export default function home() {
         <Row style={{ textAlign: "center" }}>
           <Col span={6}>
             <Dropdown overlay={Rootequation}>
-              <p
+              <a
                 onClick={(e) => e.preventDefault()}
               >
                 <AreaChartOutlined />
                 <span> Root of Equation </span>
                 <DownOutlined />
-              </p>
+              </a>
             </Dropdown>
           </Col>
           <Col span={6}>
             <Dropdown overlay={Linearalgebra}>
-              <p 
+              <a
                 onClick={(e) => e.preventDefault()}
               >
                 <LineChartOutlined />
                 <span> Linear Algebra </span>
                 <DownOutlined />
-              </p>
+              </a>
             </Dropdown>
           </Col>
           <Col span={6}>
             <Dropdown overlay={Interpolation}>
-              <p 
+              <a
                 onClick={(e) => e.preventDefault()}
               >
                 <BarChartOutlined />
                 <span> Interpolation </span>
                 <DownOutlined />
-              </p>
+              </a>
             </Dropdown>
           </Col>
           <Col span={6}>
             <Dropdown overlay={LeastSquaresRegression}>
-              <p
+              <a
                 onClick={(e) => e.preventDefault()}
               >
                 <DotChartOutlined />
                 <span> Least Squares Regression </span>
                 <DownOutlined />
-              </p>
+              </a>
             </Dropdown>
           </Col>
         </Row>
