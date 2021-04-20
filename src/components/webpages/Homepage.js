@@ -8,6 +8,7 @@ import {
   Interpolation,
   LeastSquaresRegression,
 } from "./Menuheader";
+import { Button } from 'antd';
 const { Header, Content } = Layout;
 export default function home() {
   return (
@@ -16,46 +17,46 @@ export default function home() {
         <Row style={{ textAlign: "center" }}>
           <Col span={6}>
             <Dropdown overlay={Rootequation}>
-              <a
+              <Button type="dashed"
                 onClick={(e) => e.preventDefault()}
               >
                 <AreaChartOutlined />
                 <span> Root of Equation </span>
                 <DownOutlined />
-              </a>
+              </Button>
             </Dropdown>
           </Col>
           <Col span={6}>
             <Dropdown overlay={Linearalgebra}>
-              <a
+              <Button type="dashed"
                 onClick={(e) => e.preventDefault()}
               >
                 <LineChartOutlined />
                 <span> Linear Algebra </span>
                 <DownOutlined />
-              </a>
+              </Button>
             </Dropdown>
           </Col>
           <Col span={6}>
             <Dropdown overlay={Interpolation}>
-              <a
+              <Button type="dashed"
                 onClick={(e) => e.preventDefault()}
               >
                 <BarChartOutlined />
                 <span> Interpolation </span>
                 <DownOutlined />
-              </a>
+              </Button>
             </Dropdown>
           </Col>
           <Col span={6}>
             <Dropdown overlay={LeastSquaresRegression}>
-              <a
+              <Button type="dashed"
                 onClick={(e) => e.preventDefault()}
               >
                 <DotChartOutlined />
                 <span> Least Squares Regression </span>
                 <DownOutlined />
-              </a>
+              </Button>
             </Dropdown>
           </Col>
         </Row>
