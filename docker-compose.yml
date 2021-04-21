@@ -2,12 +2,12 @@ version: "3.7"
 
 services:
   app:
-    container_name: frontend-web
+    container_name: frontend
     build: .
     ports:
       - 80:80
   api:
-    container_name: backend-api
+    container_name: backend
     hostname: api
     build: ./backend
     restart: always
