@@ -6,5 +6,5 @@ it('renders welcome message', () => {
   render(<Spline />);
   expect(screen.getByText('Spline')).toBeInTheDocument();
   render(<Newton />);
-  expect(screen.getByText('Newton Divide Difference')).toBeInTheDocument();
+  expect(screen.getByText('Newton Divide Differencexxx')).toBeInTheDocument();
 });
