@@ -2,7 +2,7 @@ import { React, useState } from "react";
 import { Input, Table, Button } from "antd";
 import { Card, Col, Row } from "antd";
 const axios = require("axios");
-let api
+let api;
 const initialState = {
   Numberofpoint: 0,
   xtrue: 0,
@@ -25,22 +25,36 @@ var columns = [
     key: "y",
   },
 ];
+var columnsC = [
+  {
+    title: "C auther",
+    dataIndex: "c",
+    key: "c",
+  },
+  {
+    title: "value",
+    dataIndex: "value",
+    key: "value",
+  },
+];
 let x = [],
   y = [],
   tableTag = [],
   tempTag = [],
   valueX = [],
   valueY = [],
-  interpolate = [],
+  datac = [],
   fx;
 export default function Newtondivide() {
   const [variable, setVariable] = useState(initialState);
   const [showtable, setshowtable] = useState(false);
   const [showans, setshowans] = useState(false);
+  const [showC, setshowC] = useState(false);
   const handlechange = (e) => {
     setVariable({ ...variable, [e.target.name]: e.target.value });
   };
   const clearState = () => {
+    setshowC(false);
     setshowans(false);
     setshowtable(false);
     setVariable({ ...initialState });
@@ -50,7 +64,7 @@ export default function Newtondivide() {
     tempTag = [];
     valueX = [];
     valueY = [];
-    interpolate = [];
+    datac = [];
     fx = undefined;
   };
 
@@ -115,41 +129,48 @@ export default function Newtondivide() {
   }
   function inputvalue() {
     for (let i = 1; i <= variable.Numberofpoint; i++) {
-      valueX[i] = parseFloat(document.getElementById("x" + i).value);
-      valueY[i] = parseFloat(document.getElementById("y" + i).value);
-    }
-    for (let i = 1; i <= variable.interpolatepoint; i++) {
-      interpolate[i] = parseInt(document.getElementById("p" + i).value);
+      valueX[i - 1] = parseFloat(document.getElementById("x" + i).value);
+      valueY[i - 1] = parseFloat(document.getElementById("y" + i).value);
     }
   }
-  function C(n) {
-    if (n === 1) {
-      return 0;
+  function C(st, ed) {
+    if (ed - st === 1) {
+      let output = (valueY[ed] - valueY[st]) / (valueX[ed] - valueX[st]);
+      return output;
     } else {
-      return (
-        (valueY[interpolate[n]] - valueY[interpolate[n - 1]]) / (valueX[interpolate[n]] - valueX[interpolate[n - 1]]) - C(n - 1)
-      );
+      let left = C(st + 1, ed);
+      let right = C(st, ed - 1);
+      let output = (left - right) / (valueX[ed] - valueX[st]);
+      return output;
     }
   }
-  function findX(n, xtrue) {
-    if (n < 1) {
-      return 1;
-    } else {
-      return (xtrue - valueX[interpolate[n]]) * findX(n - 1, xtrue);
-    }
-  }
-  function Newton(n, xtrue) {
-    inputvalue();
-    fx = valueY[1];
-    if (n === 2) {
-      fx += ((valueY[interpolate[2]] - valueY[interpolate[1]]) / (valueX[interpolate[2]] - valueX[interpolate[1]])) * (xtrue - valueX[interpolate[1]]);
-    } else {
-      for (var i = 2; i <= n; i++) {
-        fx += (C(i) / (valueX[interpolate[i]] - valueX[interpolate[1]])) * findX(i - 1, xtrue);
+  function find(xfind) {
+    let sum = valueY[0];
+    datac[0] = {
+      key: 0,
+      c: 0,
+      value: valueY[0],
+    };
+    for (let i = 1; i < valueX.length; i++) {
+      let temp2 = C(0, i);
+      datac[i] = {
+        key: i,
+        c: i,
+        value: temp2.toFixed(25),
+      };
+      for (let j = 0; j < i; j++) {
+        let temp = xfind - valueX[j];
+        temp2 *= temp;
       }
+      sum += temp2;
     }
-
+    return sum;
+  }
+  function Newton(xfind) {
+    inputvalue();
+    fx = find(xfind);
     setshowans(true);
+    setshowC(true);
   }
   async function example() {
     await axios({
@@ -173,9 +194,6 @@ export default function Newtondivide() {
     for (let i = 1; i <= api.numberpoint; i++) {
       document.getElementById("x" + i).value = api.arrayX[i - 1];
       document.getElementById("y" + i).value = api.arrayY[i - 1];
-    }
-    for (let i = 1; i <= api.interpolateinput; i++) {
-      document.getElementById("p" + i).value = api.interpolatePoint[i - 1];
     }
   }
 
@@ -214,14 +232,6 @@ export default function Newtondivide() {
                 style={{ width: "90%" }}
                 onChange={handlechange}
               />
-              <p style={{ fontSize: "20px" }}>InterpolatePoint</p>
-              <Input
-                placeholder="column matrix"
-                name="interpolatepoint"
-                value={variable.interpolatepoint}
-                style={{ width: "90%" }}
-                onChange={handlechange}
-              />
               <div style={{ marginTop: "1vh" }}>
                 <Button
                   type="primary"
@@ -254,19 +264,21 @@ export default function Newtondivide() {
                     pagination={false}
                   />
                   <br />
-                  <p style={{ fontSize: "20px" }}>Point</p>
-                  <h2>{tempTag}</h2>
                   <Button
                     onClick={() => {
-                      Newton(
-                        parseFloat(variable.interpolatepoint),
-                        parseFloat(variable.xtrue)
-                      );
+                      Newton(parseFloat(variable.xtrue));
                     }}
                   >
                     Submit
                   </Button>
                 </Card>
+              )}
+              {showC && (
+                <Table
+                  columns={columnsC}
+                  dataSource={datac}
+                  pagination={false}
+                />
               )}
             </Card>
           </Col>

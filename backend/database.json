@@ -268,9 +268,10 @@
         ],
         "xfind": 42000,
         "numberpoint": 5,
-        "interpolateinput": 2,
+        "interpolateinput": 3,
         "interpolatePoint": [
             1,
+            3,
             5
         ]
     },

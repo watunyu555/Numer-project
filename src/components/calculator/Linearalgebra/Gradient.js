@@ -42,10 +42,14 @@ export default function Gradient() {
   const [showMatrix, setshowMatrix] = useState(false);
   const [variable, setVariable] = useState(initialState);
   const [showtable, setshowtable] = useState(false);
+  const [shownot, setshownot] = useState(false)
+  const [showsubmit, setshowsubmit] = useState(true)
   const handlechange = (e) => {
     setVariable({ ...variable, [e.target.name]: e.target.value });
   };
   const clearState = () => {
+    setshowsubmit(true)
+    setshownot(false)
     setshowMatrix(false);
     setshowtable(false);
     setVariable({ ...initialState });
@@ -57,11 +61,21 @@ export default function Gradient() {
     B = [];
     X = [];
   };
+  const haddlechange = (event) => {
+    let a = parseInt(event.target.value)
+    if(isNaN(a)){
+      setshownot(true)
+      setshowsubmit(false)
+    }else{
+      setshownot(false)
+      setshowsubmit(true)
+    }
+  }
   function createMatrix(row, column) {
     for (let i = 1; i <= row; i++) {
       for (let j = 1; j <= column; j++) {
         matrixA.push(
-          <Input
+          <Input onChange={haddlechange}
             style={{
               width: "8%",
               height: "20%",
@@ -78,7 +92,7 @@ export default function Gradient() {
       }
       matrixA.push(<br />);
       matrixB.push(
-        <Input
+        <Input onChange={haddlechange}
           style={{
             width: "8%",
             height: "20%",
@@ -93,7 +107,7 @@ export default function Gradient() {
         />
       );
       matrixX.push(
-        <Input
+        <Input onChange={haddlechange}
           style={{
             width: "8%",
             height: "20%",
@@ -229,7 +243,7 @@ export default function Gradient() {
           <Col span={20}>
             <Card style={{ justifyContent: "left" }}>
               <p style={{ fontSize: "20px" }}>Table</p>
-
+              {shownot && <span style={{color:"red" ,fontSize: "20px"}}>Matrix input not a number !!!</span>}
               {showMatrix && (
                 <Card>
                   <p style={{ fontSize: "20px" }}>Matrix A</p>
@@ -238,13 +252,13 @@ export default function Gradient() {
                   <h1>{matrixB}</h1>
                   <p style={{ fontSize: "20px" }}>Initial X</p>
                   <h1>{matrixX}</h1>
-                  <Button
+                  {showsubmit &&<Button
                     onClick={() => {
                       Gradientsolve();
                     }}
                   >
                     Submit
-                  </Button>
+                  </Button>}
                 </Card>
               )}
             </Card>

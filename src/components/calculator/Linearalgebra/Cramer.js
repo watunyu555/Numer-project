@@ -4,7 +4,7 @@ import { Card, Col, Row } from "antd";
 const axios = require("axios");
 const math = require("mathjs");
 let data = [];
-let api
+let api;
 const initialState = {
   row: 0,
   column: 0,
@@ -30,11 +30,14 @@ export default function CramerRule() {
   const [showMatrix, setshowMatrix] = useState(false);
   const [variable, setVariable] = useState(initialState);
   const [showtable, setshowtable] = useState(false);
+  const [showsubmit, setshowsubmit] = useState(true);
+  const [shownot, setshownot] = useState(false);
   const handlechange = (e) => {
     setVariable({ ...variable, [e.target.name]: e.target.value });
   };
   const clearState = () => {
-    
+    setshowsubmit(true)
+    setshownot(false)
     setshowMatrix(false);
     setshowtable(false);
     setVariable({ ...initialState });
@@ -44,11 +47,22 @@ export default function CramerRule() {
     A = [];
     B = [];
   };
+  const haddlechange = (event) => {
+    let a = parseInt(event.target.value);
+    if (isNaN(a)) {
+      setshownot(true);
+      setshowsubmit(false);
+    } else {
+      setshownot(false);
+      setshowsubmit(true);
+    }
+  };
   function createMatrix(row, column) {
     for (let i = 1; i <= row; i++) {
       for (let j = 1; j <= column; j++) {
         matrixA.push(
           <Input
+            onChange={haddlechange}
             style={{
               width: "8%",
               height: "20%",
@@ -66,6 +80,7 @@ export default function CramerRule() {
       matrixA.push(<br />);
       matrixB.push(
         <Input
+          onChange={haddlechange}
           style={{
             width: "8%",
             height: "20%",
@@ -120,17 +135,18 @@ export default function CramerRule() {
       api = response.data;
     });
     await setVariable({
-      row:api.row,
-      column:api.column
-    })
+      row: api.row,
+      column: api.column,
+    });
     matrixA = [];
     matrixB = [];
-    await createMatrix(api.row, api.column)
+    await createMatrix(api.row, api.column);
     for (let i = 1; i <= api.row; i++) {
       for (let j = 1; j <= api.column; j++) {
-        document.getElementById("a" + i + "" + j).value = api.arrayA[i-1][j-1]
+        document.getElementById("a" + i + "" + j).value =
+          api.arrayA[i - 1][j - 1];
       }
-      document.getElementById("b" + i).value = api.arrayB[i-1]
+      document.getElementById("b" + i).value = api.arrayB[i - 1];
     }
   }
   return (
@@ -140,7 +156,11 @@ export default function CramerRule() {
         <Button type="primary" onClick={() => clearState()}>
           Clear
         </Button>
-        <Button type="primary" style={{marginLeft:"5px"}} onClick={() => example()}>
+        <Button
+          type="primary"
+          style={{ marginLeft: "5px" }}
+          onClick={() => example()}
+        >
           Example
         </Button>
       </Card>
@@ -179,20 +199,26 @@ export default function CramerRule() {
           <Col span={20}>
             <Card style={{ justifyContent: "left" }}>
               <p style={{ fontSize: "20px" }}>Table</p>
-
+              {shownot && (
+                <span style={{ color: "red", fontSize: "20px" }}>
+                  Matrix input not a number !!!
+                </span>
+              )}
               {showMatrix && (
                 <Card>
                   <p style={{ fontSize: "20px" }}>Matrix A</p>
                   <h1>{matrixA}</h1>
                   <p style={{ fontSize: "20px" }}>Matrix B</p>
                   <h1>{matrixB}</h1>
-                  <Button
-                    onClick={() => {
-                      Cramer();
-                    }}
-                  >
-                    Submit
-                  </Button>
+                  {showsubmit && (
+                    <Button
+                      onClick={() => {
+                        Cramer();
+                      }}
+                    >
+                      Submit
+                    </Button>
+                  )}
                 </Card>
               )}
             </Card>
